@@ -2,6 +2,7 @@
     "host": "localhost",
     "port": "3000",
     "database": {
-        "url": "postgres:///default?sslmode=disable"
+        "url": "postgres://admin:admin123456@localhost:15432/url-mapper-dev?sslmode=disable",
+        "max_connections": 16
     }
 }
