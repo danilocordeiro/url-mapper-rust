@@ -1,5 +1,5 @@
 {
-    "host": "localhost",
+    "host": "127.0.0.1",
     "port": "3000",
     "database": {
         "url": "postgres://admin:admin123456@localhost:15432/url-mapper-dev?sslmode=disable",

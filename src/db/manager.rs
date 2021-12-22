@@ -4,6 +4,7 @@ use tokio::sync::{
     mpsc::Receiver,
     oneshot::Sender
 };
+use tracing::error;
 
 type Responder<T> = Sender<Result<T, sqlx::Error>>;
 
@@ -28,7 +29,7 @@ macro_rules! resp_failed {
     ($m: expr, $f: tt) => {
         match $m {
             Ok(_) => {},
-            Err(e) => eprintln!("Resp failed for {}, err: {:?}", $f, e)
+            Err(e) => error!("Resp failed for {}, err: {:?}", $f, e)
         }
     };
 }
