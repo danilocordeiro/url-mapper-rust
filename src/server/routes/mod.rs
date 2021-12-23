@@ -13,8 +13,13 @@ async fn home_handler(_: Request<Body>) -> Result<Response<Body>, Error> {
 
 async fn error_handler(err: routerify::RouteError, _: RequestInfo) -> Response<Body> {
     error!("{}", err);
+    let status = match err.to_string().as_str() {
+        "Unauthorized Access" => hyper::StatusCode::UNAUTHORIZED,
+        _ => hyper::StatusCode::INTERNAL_SERVER_ERROR,
+    };
+
     Response::builder()
-        .status(StatusCode::INTERNAL_SERVER_ERROR)
+        .status(status)
         .body(Body::from(format!("Something went wrong: {}", err)))
         .unwrap()
 }
