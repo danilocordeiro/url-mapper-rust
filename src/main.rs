@@ -3,6 +3,7 @@ use crate::config::CONFIG;
 use crate::db::{DB, UrlMap, Message, Manager};   
 use tracing::{info, error, subscriber::set_global_default};
 use tracing_subscriber::FmtSubscriber;
+use server::Server;
 
 mod config;
 mod db;
@@ -19,13 +20,13 @@ async fn main() -> Result<()> {
     );
 
     let db = DB::new().await.unwrap();
-    let (_db_tx, db_rx) = tokio::sync::mpsc::channel(32);
+    let (db_tx, db_rx) = tokio::sync::mpsc::channel(32);
     tokio::spawn(async move {
         let mut manager = Manager::new(db, db_rx);
         manager.listen().await;
     });
 
-    server::listen().await?;
+    Server::new(db_tx).listen().await?;
 
     //let (tx, rx) = tokio::sync::oneshot::channel();
     // match db_tx.send(Message::GetUrlMaps { resp: tx }).await {
