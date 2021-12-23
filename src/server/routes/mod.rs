@@ -1,8 +1,11 @@
+use anyhow::{Error, Result};
 use hyper::{ Body, Request, Response, StatusCode };
-use routerify::{Error, Router, RouterBuilder, Middleware, ext::RequestExt, RequestInfo};
+use routerify::{Router, RouterBuilder, Middleware, ext::RequestExt, RequestInfo};
 use tracing::{info, error};
 use tokio::sync::mpsc::Sender;
 use crate::db::Message;
+
+mod api;
 
 async fn home_handler(_: Request<Body>) -> Result<Response<Body>, Error> {
     Ok(Response::new(Body::from("Url mapper in Rust")))
@@ -67,5 +70,6 @@ pub fn router() -> RouterBuilder<Body, Error> {
         .middleware(Middleware::pre(logger))
         .get("/", home_handler)
         .get("/:key", redirect_handler)
+        .scope("/api", api::router())
         .err_handler_with_info(error_handler)
 }
